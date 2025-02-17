@@ -1,0 +1,5 @@
+@import "tailwindcss";
+@import "react-toastify/dist/ReactToastify.css";
+.step {
+  width: 100px;
+}
