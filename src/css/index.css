@@ -3,3 +3,6 @@
 .step {
   width: 100px;
 }
+#root {
+  overflow: hidden;
+}
