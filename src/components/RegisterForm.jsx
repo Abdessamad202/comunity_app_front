@@ -1,5 +1,5 @@
 import { Mail, Lock } from 'lucide-react'; // Import icons for email and password fields
-import { Link, useNavigate } from 'react-router'; // Import Link for navigation and useNavigate for redirecting
+import { useNavigate } from 'react-router'; // Import Link for navigation and useNavigate for redirecting
 import { useContext, useState } from 'react'; // Import hooks for context and state management
 import { useMutation } from '@tanstack/react-query'; // Import mutation hook for API calls
 import { UserContext } from '../context/UserContext'; // User context for managing user state
@@ -7,6 +7,7 @@ import { NotificationContext } from '../context/NotificationContext'; // Notific
 import { register } from '../api/apiCalls'; // Register API call
 import { handleInputChange } from '../utils/handlers'; // Input change handler utility function
 import SubmitBtn from './SubmitBtn'; // Custom submit button component
+import LogInLink from './LogInLink';
 
 const RegisterForm = () => {
   // State and context initialization
@@ -80,14 +81,8 @@ const RegisterForm = () => {
         <SubmitBtn isPending={isPending} title="Create account" pandingTitle="Creating ..." />
 
       </form>
-
       {/* Login Link */}
-      <p className="mt-6 text-center text-sm text-gray-600">
-        Already have an account?{' '}
-        <Link to="/login" className="text-indigo-600 hover:text-indigo-500 font-medium">
-          Sign in
-        </Link>
-      </p>
+      <LogInLink />
     </>
   );
 };
