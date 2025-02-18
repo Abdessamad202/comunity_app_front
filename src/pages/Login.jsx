@@ -1,7 +1,6 @@
 import { Mail } from "lucide-react";
 import LoginForm from "../components/LoginForm";
 import FormHeader from "../components/FormHeader";
-import SubmitBar from "../components/SubmitBar"; // Import SubmitBar
 import { motion } from "framer-motion"; // Import motion from framer-motion
 
 const Login = () => {
@@ -15,7 +14,6 @@ const Login = () => {
         transition={{ duration: 0.6 }}    // Set the duration of the animation
       >
         {/* Use SubmitBar Component */}
-        <SubmitBar />
 
         <FormHeader title={"Welcome Back"} description={"Please sign in to continue"}>
           <div className="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">

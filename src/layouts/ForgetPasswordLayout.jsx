@@ -1,7 +1,6 @@
 import { Outlet, useLocation } from "react-router"; // React Router hooks for dynamic routing
 import FormHeader from "../components/FormHeader";
 import ForgetPasswordSteps from "../components/ForgetPasswordSteps";
-import SubmitBar from "../components/SubmitBar";
 // import {  Key, Lock, ShieldCheck } from "lucide-react";
 
 const ForgetPasswordLayout = () => {
@@ -46,7 +45,6 @@ const ForgetPasswordLayout = () => {
       {/* Main container with background gradient */}
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
         {/* Steps component for the registration flow */}
-        <SubmitBar />
         <ForgetPasswordSteps />
         {/* Dynamic header content based on the current route */}
         {headerContent}

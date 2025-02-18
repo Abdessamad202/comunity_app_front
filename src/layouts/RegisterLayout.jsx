@@ -1,7 +1,6 @@
 import { Outlet, useLocation } from "react-router"; // React Router hooks for dynamic routing
 import FormHeader from "../components/FormHeader"; // Import RegisterHeader component
 import RegisterSteps from "../components/RegisterSteps";
-import SubmitBar from "../components/SubmitBar";
 import { motion } from "framer-motion";
 const RegisterLayout = () => {
   const location = useLocation(); // Get current route path
@@ -36,7 +35,6 @@ const RegisterLayout = () => {
         animate={{ opacity: 1, y: 0 }}   // Animate to opacity 1 and original position
         transition={{ duration: 0.6 }}    // Set the duration of the animation
       >
-        <SubmitBar />
         {/* Steps component for the registration flow */}
         <RegisterSteps />
         {/* Dynamic header content based on the current route */}
