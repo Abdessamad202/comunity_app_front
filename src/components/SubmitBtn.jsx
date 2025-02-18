@@ -1,6 +1,16 @@
 import PropTypes from "prop-types"
+import { SubmitContext } from "../context/SubmitContext";
+import { useContext, useEffect } from "react";
 
 const SubmitBtn = ({ isPending, title, pandingTitle }) => {
+  const { setSubmit } = useContext(SubmitContext);
+  useEffect(() => {
+  setSubmit(isPending);
+
+    return () => {
+
+    };
+  }, [isPending, setSubmit]);
   return (
     <button
       type="submit"
