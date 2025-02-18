@@ -22,11 +22,42 @@ export const completeProfile = async (id,data) => {
   const response = await apiClient.post(`/register/step-3/${id}`, data)
   return response.data
 }
-export const VerificationEmail = async (id ,data) => {
+
+
+export const verifyMail = async (data) => {
+  const response = await apiClient.post(`/verify-mail`, data)
+  return response.data
+}
+// change password
+export const changePassword = async (id,data) => {
+  const response = await apiClient.post(`/change-password/${id}`, data)
+  return response.data
+}
+export const verificationByLocation = (pathname,id,data) => {
+  if (pathname === "/verify-code") {
+    return checkCode(data,id)
+  }
+  return VerificationEmail(id ,data)
+}
+const VerificationEmail = async (id ,data) => {
   const response = await apiClient.post(`/register/step-2/${id}`, data)
   return response.data
 }
-export const reSendCode = async (id) => {
-  const response = await apiClient.post(`/register/resend-code/${id}`, {})
+const checkCode = async (data,id) => {
+  const response = await apiClient.post(`/check-code/${id}`, data)
+  return response.data
+}
+export const reSendCode = (pathname,id) => {
+  if (pathname === "/verify-code") {
+    return resendVerificationEmailCode(id)
+  }
+  return resendConfirmationEmailCode(id)
+}
+const resendConfirmationEmailCode = async (id) => {
+  const response = await apiClient.post(`/register/confirm/resend-code/${id}`, {})
+  return response.data
+}
+const resendVerificationEmailCode = async (id) => {
+  const response = await apiClient.post(`/verify/resend-code/${id}`, {})
   return response.data
 }
