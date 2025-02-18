@@ -1,40 +1,48 @@
 import { Lock } from 'lucide-react'; // Icon for password input
-import { Link, useNavigate } from 'react-router'; // React Router hooks
+import { Link, useLocation, useNavigate } from 'react-router'; // React Router hooks
 import { useContext, useState } from 'react'; // React hooks
 import { useMutation } from '@tanstack/react-query'; // React Query for data fetching and mutation
 import { UserContext } from '../context/UserContext'; // Context to access user data
 import { NotificationContext } from '../context/NotificationContext'; // Context for notifications
-import { reSendCode, VerificationEmail } from '../api/apiCalls'; // API calls for verification and resending code
+import {  reSendCode, verificationByLocation } from '../api/apiCalls'; // API calls for verification and resending code
 import { handleInputChange } from '../utils/handlers'; // Utility for input change handling
 import SubmitBtn from './SubmitBtn'; // Submit button component
 
 const VerificationForm = () => {
   const navigate = useNavigate();
+  const {pathname} = useLocation();
+  console.log(pathname === "/verify-code");
+
   const [formData, setFormData] = useState({ code: '' }); // State to hold the verification code
   const notify = useContext(NotificationContext); // Notification context to show messages
   const { user, setUser } = useContext(UserContext); // Access user data from context
-  const { id } = user; // Extract user ID from context
+  const  id = user?.id; // Extract user ID from context
   const [errors, setErrors] = useState({}); // State to hold any validation errors
 
   // Mutation for verifying the code
   const { mutate: verifyCode, isPending: isVerifying } = useMutation({
-    mutationFn: ({ id, formData }) => VerificationEmail(id, formData), // Dynamic data for user ID and form data
+    mutationFn: ({ pathname,id, formData }) => verificationByLocation(pathname,id,formData), // Dynamic data for user ID and form data
     onSuccess: (data) => {
       notify('success', data.message); // Notify on successful verification
-      setUser((prev) => ({ ...prev, step: data.step })); // Update user context with new step
-      navigate('/profile'); // Redirect to profile page after verification
+      setUser((prev) => ({ ...prev, ...data.user})); // Update user context with new step
+      navigate(pathname === "/verify-code" ? '/change-password' : '/profile'); // Redirect to verification code page
+      setErrors({});
     },
     onError: (error) => {
       notify('error', 'Verification failed. Try again.'); // Notify on error
       setErrors(error.response?.data?.errors || { general: 'Verification failed. Try again.' }); // Set error messages
+      console.log(error)
     },
-  });
+  })
 
   // Mutation for resending the verification code
   const { mutate: resendingCode, isPending: isReSending } = useMutation({
-    mutationFn: (id) => reSendCode(id), // Dynamic user ID
+    mutationFn: ({ pathname,id }) => reSendCode(pathname,id), // Dynamic user ID
     onSuccess: (data) => {
+      console.log(data.user);
+
       notify('success', data.message); // Notify on successful resend
+      setErrors({});
     },
     onError: (error) => {
       notify('error', 'Failed to resend code. Try again.'); // Notify on resend failure
@@ -45,13 +53,13 @@ const VerificationForm = () => {
   // Handle form submission for code verification
   const handleSubmit = (e) => {
     e.preventDefault();
-    verifyCode({ id, formData }); // Pass dynamic user ID and form data
+    verifyCode({ pathname ,id, formData }); // Pass dynamic user ID and form data
   };
 
   // Handle code resend request
   const resendCode = (e) => {
     e.preventDefault();
-    resendingCode(id); // Trigger resend code mutation
+    resendingCode({pathname,id}); // Trigger resend code mutation
   };
 
   return (
@@ -91,14 +99,6 @@ const VerificationForm = () => {
           disabled={isReSending} // Disable the link when resending
         >
           {isReSending ? 'Resending...' : 'Resend Code'} {/* Change text while resending */}
-        </Link>
-      </p>
-
-      {/* Already Verified Link */}
-      <p className="mt-6 text-center text-sm text-gray-600">
-        Already verified?{' '}
-        <Link to="/login" className="text-indigo-600 hover:text-indigo-500 font-medium">
-          Sign in
         </Link>
       </p>
     </>
