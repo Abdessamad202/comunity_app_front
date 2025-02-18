@@ -6,18 +6,21 @@ import './css/index.css'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { UserProvider } from './components/UserProvider.jsx'
 import { NotificationProvider } from './components/NotificationProvider.jsx'
+import SubmitProvider from './components/SubmitProvider.jsx'
 const queryClient = new QueryClient()
 createRoot(document.getElementById('root')).render(
 
   <StrictMode>
     <BrowserRouter>
-      <NotificationProvider>
-        <QueryClientProvider client={queryClient}>
-          <UserProvider>
-            <App />
-          </UserProvider>
-        </QueryClientProvider>
-      </NotificationProvider>
+      <SubmitProvider>
+        <NotificationProvider>
+          <QueryClientProvider client={queryClient}>
+            <UserProvider>
+              <App />
+            </UserProvider>
+          </QueryClientProvider>
+        </NotificationProvider>
+      </SubmitProvider>
     </BrowserRouter>
   </StrictMode>
 )
