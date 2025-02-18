@@ -11,7 +11,7 @@ import SubmitBtn from './SubmitBtn';
 const ProfileCompletionForm = () => {
   const notify = useContext(NotificationContext);
   const { user, setUser } = useContext(UserContext);
-  const { id } = user;
+  const id  = user?.id;
 
   // Navigation
   const navigate = useNavigate();
