@@ -27,7 +27,7 @@ const Home = () => {
     mutationFn: logOut,
     onSuccess: () => {
       notify("success", "Logged out successfully");
-      setUser(null);
+      setUser({});
       navigate("/login");
     },
     onError: (error) => {
