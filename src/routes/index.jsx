@@ -13,6 +13,7 @@ import ForgetPasswordLayout from "../layouts/ForgetPasswordLayout";
 import ForgotPasswordForm from "../components/ForgetPasswordForm";
 import ChangePasswordForm from "../components/ChangePasswordForm";
 import ForgetPasswordGuard from "../middlewares/ForgetPasswordGuard";
+import Landing from "../pages/Landing";
 
 const AppRoutes = () => {
   return (
@@ -22,6 +23,7 @@ const AppRoutes = () => {
         {/* Public routes */}
         <Route element={<ToastContainer />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Landing />} />
         <Route element={<ForgetPasswordLayout />}>
           <Route element={<ForgetPasswordGuard />}>
             <Route path="/verify-email" element={<ForgotPasswordForm />} />
