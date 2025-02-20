@@ -7,7 +7,7 @@ const CTASection = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         <div className="rounded-xl overflow-hidden">
           <img
-            src="https://images.unsplash.com/photo-1543269865-cbf427effbad?q=80&w=2070&auto=format&fit=crop"
+          src="http://localhost:8000/imgs/cards/pic5.jpg"
             alt="Community members"
             className="w-full h-[400px] object-cover"
           />
@@ -19,7 +19,7 @@ const CTASection = () => {
           <p className="text-xl text-gray-600 mb-8">
             Start your journey today and connect with like-minded individuals who share your passions and interests.
           </p>
-          <div className="flex space-x-4 items-center justify-center lg:justify-start">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start justify-center lg:justify-start gap-4">
             <Link
               to={'/login'}
               className="flex px-6 py-3 bg-white text-indigo-600 border border-indigo-600 items-center gap-2 rounded-lg transition duration-200 shadow-md hover:bg-indigo-700 hover:border-white hover:text-white"
