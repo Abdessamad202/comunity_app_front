@@ -21,7 +21,6 @@ const Home = () => {
     enabled: !!user?.profileId,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
-
   // mutations
   const { mutate: logOutMutation, isPending: isLogout } = useMutation({
     mutationFn: logOut,
@@ -64,7 +63,7 @@ const Home = () => {
             <h2 className="text-xl font-semibold text-gray-700">Profile Data:</h2>
             <p className="text-gray-600"><strong>Name:</strong> {profile.name}</p>
             <p className="text-gray-600"><strong>Email:</strong> {profile.user?.email || "Not available"}</p>
-            <p className="text-gray-600"><strong>Sex:</strong> {profile.sex}</p>
+            <p className="text-gray-600"><strong>Sex:</strong> {profile.gender}</p>
             <p className="text-gray-600"><strong>Date of Birth:</strong> {profile.date_of_birth}</p>
           </div>
         </>
