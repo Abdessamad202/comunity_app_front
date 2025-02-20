@@ -48,3 +48,10 @@ Each step must be completed for security reasons before users can access the pla
 - Node.js and npm (for React)
 - PHP and Composer (for Laravel)
 - MySQL database
+
+// creation of posts
+// post has user_id as foreign key
+800 post / 200 user
+1 user has 4 posts
+
+//
