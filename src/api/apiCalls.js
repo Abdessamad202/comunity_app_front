@@ -18,6 +18,17 @@ export const getUser = async (profileId) => {
   const response = await apiClient.get(`/profile/${profileId}`)
   return response.data.profile
 }
+// export const getPosts = async () => {
+//   const response = await apiClient.get(`/posts`)
+//   return response.data
+// }
+export const getPosts = async ({ pageParam = 1 }) => {
+  const response = await apiClient.get(`/posts?page=${pageParam}`);
+  return {
+    posts: response.data.posts,
+    nextPage: response.data.nextPage ? pageParam + 1 : null, // تحديد الصفحة الجاية
+  };
+};
 export const completeProfile = async (id,data) => {
   const response = await apiClient.post(`/register/step-3/${id}`, data)
   return response.data
