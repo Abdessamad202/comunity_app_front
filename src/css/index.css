@@ -25,3 +25,9 @@ span{
 .animate-spin-grow {
   animation: spin-grow 1.2s infinite ease-in-out;
 }
+textarea:focus{
+  outline: none;
+}
+.notify{
+  z-index: 10000;
+}
