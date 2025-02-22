@@ -14,21 +14,15 @@ export const logOut = async () => {
   return response.data
 }
 
-export const getUser = async (profileId) => {
-  const response = await apiClient.get(`/profile/${profileId}`)
-  return response.data.profile
+export const getUser = async (userId) => {
+  const response = await apiClient.get(`/user/${userId}`)
+  return response.data
 }
 // export const getPosts = async () => {
 //   const response = await apiClient.get(`/posts`)
 //   return response.data
 // }
-export const getPosts = async ({ pageParam = 1 }) => {
-  const response = await apiClient.get(`/posts?page=${pageParam}`);
-  return {
-    posts: response.data.posts,
-    nextPage: response.data.nextPage ? pageParam + 1 : null, // تحديد الصفحة الجاية
-  };
-};
+
 export const completeProfile = async (id,data) => {
   const response = await apiClient.post(`/register/step-3/${id}`, data)
   return response.data
@@ -70,5 +64,43 @@ const resendConfirmationEmailCode = async (id) => {
 }
 const resendVerificationEmailCode = async (id) => {
   const response = await apiClient.post(`/verify/resend-code/${id}`, {})
+  return response.data
+}
+
+export const getPosts = async ({ pageParam = 1 }) => {
+  const response = await apiClient.get(`/posts?page=${pageParam}`);
+  return {
+    posts: response.data.posts,
+    nextPage: response.data.nextPage ? pageParam + 1 : null, // تحديد الصفحة الجاية
+  };
+};
+export const getCommetsPost = async (postId, pageParam) => {
+  const response = await apiClient.get(`/posts/${postId}/comments?page=${pageParam}`);
+  return {
+    total : response.data.total,
+    comments: response.data.comments,
+    nextPage:response.data.nextPage ? pageParam + 1 : null
+  };
+}
+
+export const likeOrUnlikePost = async (postId, isLiked) => {
+  if (isLiked) {
+    return unlikePost(postId)
+  } else {
+    return likePost(postId)
+  }
+}
+const likePost = async (postId) => {
+  const response = await apiClient.post(`/posts/${postId}/like`)
+  return response.data
+}
+
+const unlikePost = async (postId) => {
+  const response = await apiClient.delete(`/posts/${postId}/unlike`)
+  return response.data
+}
+
+export const addComment = async (postId, data) => {
+  const response = await apiClient.post(`/posts/${postId}/comments`, data)
   return response.data
 }
