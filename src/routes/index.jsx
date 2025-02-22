@@ -16,6 +16,7 @@ import ForgetPasswordGuard from "../middlewares/ForgetPasswordGuard";
 import Landing from "../pages/Landing";
 import Posts from "../components/Posts";
 import ModalWithImage from "../components/Modal";
+import PageHome from "../pages/Home";
 
 const AppRoutes = () => {
   return (
@@ -38,7 +39,7 @@ const AppRoutes = () => {
         <Route path="*" element={<NotFound />} />
         {/* Protected routes for authenticated users */}
         <Route element={<ProtectedRoute />}>
-          <Route path="/home" element={<Home />} />
+          <Route path="/home" element={<PageHome />} />
         </Route>
         {/* Step-based authentication (user must complete steps in order) */}
         {/* Step-based authentication (user must complete steps in order) */}
