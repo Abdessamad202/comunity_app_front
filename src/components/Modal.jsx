@@ -7,11 +7,12 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import { formatDistanceToNow } from "date-fns";
-import PropTypes from "prop-types";
 import CommentsSection from "./CommentsSection";
+import { useContext } from "react";
+import { CommentsContext } from "../context/CommentsContext";
 
-export default function ModalWithImage({ handleOpen, open, post }) {
-
+export default function ModalWithImage() {
+  const { open, handleOpen, post } = useContext(CommentsContext);
   return (
     <Dialog size="sm"  open={open} handler={handleOpen} className="h-[80vh] overflow-auto rounded-lg z-1">
       {/* Header Section */}
@@ -41,15 +42,9 @@ export default function ModalWithImage({ handleOpen, open, post }) {
           </Typography>
           <img alt="Post" className="w-full h-[20rem] object-cover rounded-lg" src={post?.picture} />
         </div>
-        <CommentsSection postId={post?.id} />
+        <CommentsSection />
         {/* Comments Section */}
       </DialogBody>
     </Dialog>
   );
 }
-
-ModalWithImage.propTypes = {
-  open: PropTypes.bool.isRequired,
-  handleOpen: PropTypes.func.isRequired,
-  post: PropTypes.object.isRequired,
-};
