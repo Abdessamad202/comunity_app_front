@@ -4,6 +4,8 @@ import { useInView } from "react-intersection-observer";
 import { getPosts } from "../api/apiCalls";
 import Post from "./Post";
 import LoadingDots from "./LoadingDots";
+import { useContext } from "react";
+import { CommentsContext } from "../context/CommentsContext";
 
 const Posts = () => {
   const { ref, inView } = useInView();
@@ -13,6 +15,7 @@ const Posts = () => {
     error,
     fetchNextPage,
     hasNextPage,
+
     isFetchingNextPage,
   } = useInfiniteQuery({
     queryKey: ["posts"],
@@ -22,10 +25,9 @@ const Posts = () => {
   if (inView && hasNextPage && !isFetchingNextPage) {
     fetchNextPage();
   }
-
   return (
-    <div className="max-w-3xl mx-auto p-6">
-      <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">Latest Posts</h1>
+    <div className="">
+      {/* <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">Latest Posts</h1> */}
 
       {isLoading ? (
         <div className="space-y-6">
