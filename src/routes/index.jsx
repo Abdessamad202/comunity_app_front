@@ -15,6 +15,7 @@ import ChangePasswordForm from "../components/ChangePasswordForm";
 import ForgetPasswordGuard from "../middlewares/ForgetPasswordGuard";
 import Landing from "../pages/Landing";
 import Posts from "../components/Posts";
+import ModalWithImage from "../components/Modal";
 
 const AppRoutes = () => {
   return (
@@ -24,6 +25,7 @@ const AppRoutes = () => {
         {/* Public routes */}
         <Route element={<ToastContainer />} />
         <Route path="/posts" element={<Posts />} />
+        <Route path='/modal' element={<ModalWithImage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Landing />} />
         <Route element={<ForgetPasswordLayout />}>
