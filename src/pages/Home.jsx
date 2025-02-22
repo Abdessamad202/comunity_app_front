@@ -15,9 +15,9 @@ const Home = () => {
   const navigate = useNavigate();
 
   // query
-  const { data: profile, isLoading: isGettingUser, error } = useQuery({
-    queryKey: ['user', user?.profileId], // ✅ Update query key to include user ID
-    queryFn: () => getUser(user.profileId),
+  const { data: userData, isLoading: isGettingUser, error } = useQuery({
+    queryKey: ['user', user?.id], // ✅ Update query key to include user ID
+    queryFn: () => getUser(user.id),
     enabled: !!user?.profileId,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
@@ -56,15 +56,15 @@ const Home = () => {
         </div>
       )}
 
-      {!isGettingUser && !isLogout && profile && (
+      {!isGettingUser && !isLogout && userData && (
         <>
           <h1 className="text-2xl font-bold text-indigo-600">Welcome to the App</h1>
           <div className="mt-4 bg-white p-4 rounded-lg shadow-md">
             <h2 className="text-xl font-semibold text-gray-700">Profile Data:</h2>
-            <p className="text-gray-600"><strong>Name:</strong> {profile.name}</p>
-            <p className="text-gray-600"><strong>Email:</strong> {profile.user?.email || "Not available"}</p>
-            <p className="text-gray-600"><strong>Sex:</strong> {profile.gender}</p>
-            <p className="text-gray-600"><strong>Date of Birth:</strong> {profile.date_of_birth}</p>
+            <p className="text-gray-600"><strong>Name:</strong> {userData.profile?.name}</p>
+            <p className="text-gray-600"><strong>Email:</strong> {userData?.email || "Not available"}</p>
+            <p className="text-gray-600"><strong>Sex:</strong> {userData.profile?.gender}</p>
+            <p className="text-gray-600"><strong>Date of Birth:</strong> {userData.profile?.date_of_birth}</p>
           </div>
         </>
       )}
