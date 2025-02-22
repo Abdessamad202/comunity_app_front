@@ -27,7 +27,7 @@ export const NotificationProvider = ({ children }) => {
 
   return (
     <NotificationContext.Provider value={notify}>
-      <ToastContainer /> {/* ✅ Component to display toasts */}
+      <ToastContainer className={'notify'} /> {/* ✅ Component to display toasts */}
       {children}
     </NotificationContext.Provider>
   );
