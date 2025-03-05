@@ -31,3 +31,6 @@ textarea:focus{
 .notify{
   z-index: 10000;
 }
+.break-inside-avoid{
+  height: fit-content !important;
+}
