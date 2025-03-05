@@ -104,3 +104,25 @@ export const addComment = async (postId, data) => {
   const response = await apiClient.post(`/posts/${postId}/comments`, data)
   return response.data
 }
+export const deleteComment = async (commentId) => {
+  const response = await apiClient.delete(`/comments/${commentId}`, {});
+  return response.data;
+};
+export const updateComment = async (commentId, data) => {
+  const response = await apiClient.put(`/comments/${commentId}`, data);
+  return response.data;
+};
+export const getUserPosts = async (userId) => {
+  const response = await apiClient.get(`/user/${userId}/posts`)
+  return response.data || []
+}
+export const addPost = async (data) => {
+  const response = await apiClient.post(`/posts`, data,{headers: {
+    'Content-Type': 'multipart/form-data', // ⚠️ ضروري باش يفهم Laravel أنو صورة
+  }})
+  return response.data
+}
+export const deletePost = async (postId) => {
+  const response = await apiClient.delete(`/posts/${postId}`)
+  return response.data
+}
