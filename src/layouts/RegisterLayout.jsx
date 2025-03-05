@@ -18,7 +18,7 @@ const RegisterLayout = () => {
         <FormHeader title="Verify your email" description="Enter the verification code we sent to your email." />
       );
       break;
-    case "/profile":
+    case "/profile-completion":
       headerContent = (
         <FormHeader title="Complete your profile" description="Tell us more about you" />
       );
