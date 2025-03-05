@@ -39,7 +39,7 @@ const RegisterSteps = () => {
         <div className="flex flex-col items-center space-y-2 step">
           {/* Step circle */}
           <div
-            className={`w-8 h-8 rounded-full ${getStepColor(3, "/profile", user?.step)} text-white flex items-center justify-center`}
+            className={`w-8 h-8 rounded-full ${getStepColor(3, "/profile-completion", user?.step)} text-white flex items-center justify-center`}
           >
             <span>3</span>
           </div>
