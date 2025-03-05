@@ -8,7 +8,7 @@ import ProtectedRoute from "../middlewares/ProtectedRoute";
 import NotFound from "../pages/NotFound";
 import Login from "../pages/Login";
 import { ToastContainer } from "react-toastify";
-import Home from "../pages/Home";
+// import Home from "../pages/Home";
 import ForgetPasswordLayout from "../layouts/ForgetPasswordLayout";
 import ForgotPasswordForm from "../components/ForgetPasswordForm";
 import ChangePasswordForm from "../components/ChangePasswordForm";
@@ -17,16 +17,21 @@ import Landing from "../pages/Landing";
 import Posts from "../components/Posts";
 import ModalWithImage from "../components/Modal";
 import PageHome from "../pages/Home";
+import ProfilePage from "../pages/Profile";
+import Layout from "../layouts/Layout";
+import ScrollToTop from "../components/ScrollToTop";
+// import DeleteComment from "../components/DeleteComment";
 
 const AppRoutes = () => {
   return (
     <>
 
+      <ScrollToTop />
       <Routes>
         {/* Public routes */}
         <Route element={<ToastContainer />} />
         <Route path="/posts" element={<Posts />} />
-        <Route path='/modal' element={<ModalWithImage />} />
+        {/* <Route path="/delete" element={<DeleteComment />} /> */}
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Landing />} />
         <Route element={<ForgetPasswordLayout />}>
@@ -39,7 +44,10 @@ const AppRoutes = () => {
         <Route path="*" element={<NotFound />} />
         {/* Protected routes for authenticated users */}
         <Route element={<ProtectedRoute />}>
-          <Route path="/home" element={<PageHome />} />
+          <Route element={<Layout />}>
+            <Route path="home" element={<PageHome />} />
+            <Route path="profile" element={<ProfilePage />} />
+          </Route>
         </Route>
         {/* Step-based authentication (user must complete steps in order) */}
         {/* Step-based authentication (user must complete steps in order) */}
@@ -47,7 +55,7 @@ const AppRoutes = () => {
           <Route element={<StepsGuard />}>
             <Route path="/register" element={<RegisterForm />} />
             <Route path="/verify" element={<VerificationForm />} />
-            <Route path="/profile" element={<ProfileCompletionForm />} />
+            <Route path="/profile-completion" element={<ProfileCompletionForm />} />
           </Route>
         </Route>
       </Routes>
