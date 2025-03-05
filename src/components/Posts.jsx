@@ -1,33 +1,39 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
-
 import { getPosts } from "../api/apiCalls";
 import Post from "./Post";
 import LoadingDots from "./LoadingDots";
-import { useContext } from "react";
-import { CommentsContext } from "../context/CommentsContext";
+// import { useContext } from "react";
+// import { CommentsContext } from "../context/CommentsContext";
 
 const Posts = () => {
   const { ref, inView } = useInView();
   const {
-    data: posts,
+    data: { pages = [] } = {}, // Destructure to avoid errors if pages is undefined
     isLoading,
     error,
     fetchNextPage,
     hasNextPage,
-
     isFetchingNextPage,
   } = useInfiniteQuery({
     queryKey: ["posts"],
     queryFn: getPosts,
-    getNextPageParam: (lastPage) => lastPage.nextPage,
+    getNextPageParam: (lastPage) => {
+      // Ensure lastPage is not undefined and has nextPage
+      return lastPage?.nextPage ?? null;
+    },
+    staleTime: 300000, // 5 minutes: Data stays fresh in cache for 5 minutes
+    refetchOnWindowFocus: true, // Refetch data when the window regains focus
+    refetchInterval: 600000, // Refetch every 10 minutes
   });
+
+  // Trigger fetching next page when the user is in view
   if (inView && hasNextPage && !isFetchingNextPage) {
     fetchNextPage();
   }
+
   return (
     <div className="">
-      {/* <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">Latest Posts</h1> */}
 
       {isLoading ? (
         <div className="space-y-6">
@@ -43,19 +49,19 @@ const Posts = () => {
         <p className="text-center text-red-500">Error fetching posts: {error.message}</p>
       ) : (
         <div className="grid grid-cols-1 gap-6">
-          {posts?.pages.map((page, index) => (
-            <div key={index} className="space-y-6">
-              {page.posts.map((post, i) => (
-                <Post key={i} post={post} />
+          {pages.map((page, pageIndex) => (
+            <div key={pageIndex} className="space-y-6">
+              {page.posts.map((post) => (
+                <Post key={post.id} post={post} />
               ))}
             </div>
           ))}
         </div>
       )}
 
-      {/* عنصر مراقبة التحميل */}
+      {/* Loading more posts when near the bottom */}
       <div ref={ref} className="h-20 flex justify-center items-center">
-        {isFetchingNextPage && (<LoadingDots />)}
+        {isFetchingNextPage && <LoadingDots />}
       </div>
     </div>
   );
