@@ -1,41 +1,73 @@
-import { useMutation, useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
-import { addComment, getCommetsPost } from "../api/apiCalls";
+import { useMutation, useInfiniteQuery } from "@tanstack/react-query";
+import { addComment, deleteComment, updateComment, getCommetsPost } from "../api/apiCalls";
 import { useContext, useState } from "react";
-import { formatDistanceToNow } from "date-fns";
 import { Avatar, Button, Typography } from "@material-tailwind/react";
-import PropTypes from "prop-types";
-import { useInView } from "react-intersection-observer";
-import LoadingDots from "./LoadingDots";
 import { NotificationContext } from "../context/NotificationContext";
 import { UserContext } from "../context/UserContext";
 import { CommentsContext } from "../context/CommentsContext";
-// import { profile } from "console";
-// import { UserCheck } from "lucide-react";
+import CommentItem from "./CommentItem";
+import DeleteModal from "./DeleteModal";
+import { formatDistanceToNow } from "date-fns";
+import AddComment from "./AddComment";
+import CommentAdding from "./CommentAdding";
 
+// Main Component
 export default function CommentsSection() {
-  const { post } = useContext(CommentsContext);
-  const queryClient = useQueryClient();
   const notify = useContext(NotificationContext);
+  const { user } = useContext(UserContext);
+  const {post} = useContext(CommentsContext)
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [commentToDelete, setCommentToDelete] = useState(null);
   const [pendingComment, setPendingComment] = useState(null);
   const [formData, setFormData] = useState({ content: "" });
 
-  const { comments, setComments } = useContext(CommentsContext)
+  // Fetch Comments using Infinite Query
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
+    queryKey: ["comments", post.id],
+    queryFn: ({ pageParam = 1 }) => getCommetsPost(post.id, pageParam),
+    getNextPageParam: (lastPage) => lastPage.nextPage,
+  });
 
-  const { user } = useContext(UserContext)
+  const { mutate: deleteCommentMutation, isPending: deletePending } = useMutation({
+    mutationFn: (commentId) => deleteComment(commentId),
+    onSuccess: () => {
+      notify("success", "Comment deleted successfully");
+      setDeleteModalOpen(false);
+      setCommentToDelete(null);
+    },
+    onError: () => {
+      notify("error", "Failed to delete comment");
+      setDeleteModalOpen(false);
+      setCommentToDelete(null);
+    },
+  });
 
   const { mutate: addCommentMutation, isPending: commentPending } = useMutation({
     mutationFn: ({ id, data }) => addComment(id, data),
-    onMutate: () => {
-
+    onMutate:()=>{
       setPendingComment({
+        id: data?.pages?.[0]?.total + 1,
         content: formData.content,
         created_at: new Date().toISOString(),
         user: user,
       });
     },
     onSuccess: () => {
-      setComments(prev => [pendingComment, ...prev])
       notify("success", "Comment added successfully");
+      setFormData({ content: "" });
+    },
+  });
+  console.log(formData);
+
+  const { mutate: updateCommentMutation } = useMutation({
+    mutationFn: ({ id, data }) => updateComment(id, data),
+    onSuccess: () => {
+      notify("success", "Comment updated successfully");
       setFormData({ content: "" });
     },
   });
@@ -46,63 +78,47 @@ export default function CommentsSection() {
     }
   };
 
+  const handleDeleteComment = (commentId) => {
+    setCommentToDelete(commentId);
+    setDeleteModalOpen(true);
+  };
+
+  const isCommentOwner = (comment) => comment?.user?.id === user?.id;
+
   return (
     <div className="m-6 pt-4">
       <Typography variant="h6" color="blue-gray" className="mb-4">
-        Comments ({comments.length}) {/* Use totalComments from the first page */}
+        Comments ({data?.pages?.[0]?.total ?? 0})
       </Typography>
-      <div className="mb-6">
-        <textarea
-          value={formData.content}
-          onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-          placeholder="Add a comment..."
-          className="w-full h-15 p-2 rounded-lg resize-none"
-        />
-        <Button onClick={handleAddComment} color="blue" className="mt-2 w-full" disabled={!formData.content.trim() || commentPending}>
-          {commentPending ? "Adding..." : "Add Comment"}
-        </Button>
-      </div>
-      {commentPending && (
-        <div className="flex items-start mb-4 opacity-50">
-          <Avatar size="sm" variant="circular" alt={pendingComment?.user?.profile?.name} src={pendingComment?.user?.profile?.picture} />
-          <div className="ml-3 w-full">
-            <div className="flex justify-between items-center">
-              <Typography variant="small" color="blue-gray" className="font-medium">
-                {pendingComment?.user?.profile?.name}
-              </Typography>
-              <Typography variant="small" color="gray" className="text-xs">
-                {formatDistanceToNow(new Date(pendingComment?.created_at), { addSuffix: true })}
-              </Typography>
-            </div>
-            <Typography variant="paragraph" color="blue-gray" className="bg-gray-100 p-2 rounded-lg mt-1 text-sm">
-              {pendingComment?.content}
-            </Typography>
-          </div>
-        </div>
+
+      <AddComment formData={formData} setFormData={setFormData} handleAddComment={handleAddComment} commentPending={commentPending} />
+      <CommentAdding commentPending={commentPending} pendingComment={pendingComment} />
+
+      {data?.pages?.map((page) =>
+        page.comments.map((comment) => (
+          <CommentItem
+            key={comment.id}
+            comment={comment}
+            onDelete={handleDeleteComment}
+            isCommentOwner={isCommentOwner}
+            onUpdate={(commentId, content) => updateCommentMutation({ id: commentId, data: { content } })}
+          />
+        ))
       )}
-      {
-        comments?.map((comment, index) => (
-          <div key={index} className="flex items-start mb-4">
-            <Avatar size="sm" variant="circular" alt={comment?.user?.profile?.name} src={comment?.user?.profile?.picture} />
-            <div className="ml-3 w-full">
-              <div className="flex justify-between items-center">
-                <Typography variant="small" color="blue-gray" className="font-medium">
-                  {comment?.user?.profile?.name}
-                </Typography>
-                <Typography variant="small" color="gray" className="text-xs">
-                  {formatDistanceToNow(comment?.created_at, { addSuffix: true })}
-                </Typography>
-              </div>
-              <Typography variant="paragraph" color="blue-gray" className="bg-gray-100  p-2 rounded-lg mt-1 text-sm">
-                {comment?.content}
-              </Typography>
-            </div>
-          </div>
-        ))}
+
+      {hasNextPage && (
+        <Button onClick={() => fetchNextPage()} disabled={isFetchingNextPage} className="mt-4">
+          {isFetchingNextPage ? "Loading more..." : "Load More"}
+        </Button>
+      )}
+
+      <DeleteModal
+        isOpen={deleteModalOpen}
+        title="Are you sure you want to delete this comment?"
+        onClose={() => setDeleteModalOpen(false)}
+        onConfirm={() => deleteCommentMutation(commentToDelete)}
+        isDeleting={deletePending}
+      />
     </div>
   );
 }
-
-CommentsSection.propTypes = {
-  post: PropTypes.object.isRequired,
-};
