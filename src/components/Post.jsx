@@ -8,24 +8,26 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { NotificationContext } from "../context/NotificationContext";
 import ModalWithImage from "./Modal";
 import { CommentsContext } from "../context/CommentsContext.jsx";
-
+import PostOptions from "./PostOptions.jsx";
+import { UserContext } from "../context/UserContext";
 const fallbackImage = "https://via.placeholder.com/600x400?text=No+Image"; // صورة افتراضية
 
 const Post = ({ post }) => {
   const [open, setOpen] = useState(false);
   // const [isFavorite, setIsFavorite] = useState(false);
-  const [comments, setComments] = useState(post.comments);
-  // console.log(comments);
+  const [comments, setComments] = useState(post?.comments_count);
+  // console.log(post ,comments);
 
+  const { user } = useContext(UserContext);
   const handleOpen = () => setOpen((cur) => !cur);
   // const handleIsFavorite = () => setIsFavorite((cur) => !cur);
   const notify = useContext(NotificationContext);
   const queryClient = useQueryClient();
 
   // تحقق من أن المستخدم قام بالإعجاب بالمنشور
-  const [likes, setLikes] = useState(post.likes_count);
-  const [isLiked, setIsLiked] = useState(post.liked);
-  console.log(isLiked);
+  const [likes, setLikes] = useState(post?.likes_count);
+  const [isLiked, setIsLiked] = useState(post?.liked);
+  // console.log(isLiked);
 
   const { mutate: likePostMutation } = useMutation({
     mutationFn: ({ id, isLiked }) => (likeOrUnlikePost(id, isLiked)),
@@ -40,31 +42,37 @@ const Post = ({ post }) => {
       notify("error", error.response?.data?.message || "Something went wrong");
     }
   });
-
+  const isCommentOwner = (post) => post?.user?.id === user?.id;
   return (
     <CommentsContext.Provider provider value={{comments, setComments, post , open , handleOpen}}>
-      <div className="bg-white p-4 rounded-lg shadow-lg border border-gray-200 transition-transform duration-300">
+      <div className="bg-white p-4 rounded-lg shadow-lg border border-gray-200 transition-transform duration-300 ">
         {/* معلومات المستخدم */}
         {/* {JSON.srtingify(isLiked.toString())} */}
-        <div className="flex items-center py-2">
-          <img
-            className="w-10 h-10 rounded-full object-cover"
-            src={post.user.profile.picture}
-            alt={post.user.profile.name}
-          />
-          <div className="ml-3">
-            <span className="font-semibold">{post.user.profile.name}</span>
-            <p className="text-sm text-gray-500">
-              {formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}
-            </p>
+        <div className="flex justify-between items-center">
+          <div className="flex items-center py-2">
+            <img
+              className="w-10 h-10 rounded-full object-cover"
+              src={post?.user?.profile?.picture}
+              alt={post?.user?.profile?.name}
+            />
+            <div className="ml-3">
+              <span className="font-semibold">{post?.user?.profile?.name}</span>
+              <p className="text-sm text-gray-500">
+                {formatDistanceToNow(new Date(post?.created_at), { addSuffix: true })}
+              </p>
+            </div>
           </div>
+            {isCommentOwner(post) && (
+                <PostOptions postId={post?.id} />
+              )}
+
         </div>
 
         {/* صورة المنشور */}
-        <p className="mt-3">{post.content}</p>
+        <p className="mt-3">{post?.content}</p>
 
         <LazyLoadImage
-          src={post.picture}
+          src={post?.picture}
           alt="Post"
           effect="blur"
           placeholderSrc={fallbackImage}
@@ -81,7 +89,7 @@ const Post = ({ post }) => {
             <Heart
               className={`w-5 h-5 transition cursor-pointer ${isLiked ? "fill-pink-600 text-pink-600" : " text-pink-600"
                 }`}
-              onClick={() => likePostMutation({ id: post.id, isLiked })}
+              onClick={() => likePostMutation({ id: post?.id, isLiked })}
             />
             <span className="ml-1 text-sm">Like</span>
             <span className="ml-2 text-sm">{likes}</span>
@@ -90,7 +98,7 @@ const Post = ({ post }) => {
           <button className="flex items-center text-gray-500 hover:text-gray-600" onClick={handleOpen}>
             <MessageCircle className="w-5 h-5" />
             <span className="ml-1 text-sm">Comment</span>
-            <span className="ml-2 text-sm">{comments?.length}</span>
+            <span className="ml-2 text-sm">{comments}</span>
           </button>
         </div>
         <ModalWithImage />
