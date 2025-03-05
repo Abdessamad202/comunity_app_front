@@ -22,7 +22,7 @@ const StepsGuard = () => {
           navigate("/verify"); // Redirect to verification if step 1
           break;
         case 2:
-          navigate("/profile"); // Redirect to profile if step 2
+          navigate("/profile-completion"); // Redirect to profile if step 2
           break;
         default:
           navigate("/home"); // Redirect to home if all steps are complete
