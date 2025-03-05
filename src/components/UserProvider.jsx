@@ -6,6 +6,7 @@ import { useNavigate } from "react-router";
 export const UserProvider = ({ children }) => {
   // ✅ Store user data in state, initializing from localStorage if available
   const navigate = useNavigate();
+  const [posts, setPosts] = useState([]);
   const [user, setUser] = useState(() => {
     const storedUser = localStorage.getItem("user");
     return storedUser ? JSON.parse(storedUser) : null;
@@ -25,7 +26,7 @@ export const UserProvider = ({ children }) => {
   }, [user, navigate]);
 
   // ✅ Provide user state and setUser function to the application
-  return <UserContext.Provider value={{ user, setUser }}>{children}</UserContext.Provider>;
+  return <UserContext.Provider value={{ user, setUser, posts, setPosts }}>{children}</UserContext.Provider>;
 };
 
 // ✅ Ensure `children` is a valid React node
